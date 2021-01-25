@@ -34,7 +34,22 @@ function Payment() {
             ))}
           </div>
         </div>
-        <div className="payment__section"></div>
+        <div className="payment__section">
+        <div className="payment__title">
+          <h3>Payment Method</h3>
+        </div>
+        <div className="payment__items">
+          {basket.map((item) => (
+            <CheckoutProduct
+              id={item.id}
+              title={item.title}
+              image={item.image}
+              price={item.price}
+              rating={item.rating}
+            />
+          ))}
+        </div>
+        </div>
       </div>
     </div>
   );
