@@ -3,8 +3,18 @@ import "./Header.css";
 import SearchIcon from "@material-ui/icons/Search";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import { Link } from "react-router-dom";
+import { useStateValue } from "./StateProvider";
+import { auth } from "./firebase";
 
 function Header() {
+  const [{ basket, user }, dispatch] = useStateValue();
+
+  const handleAuthenticaton = () => {
+    if (user) {
+      auth.signOut();
+    }
+  };
+
   return (
     <div className="header">
       <Link to="/">
@@ -20,14 +30,22 @@ function Header() {
         <SearchIcon className="header_searchIcon" />
       </div>
       <div className="header_nav">
-        <div className="header_option">
-          <span className="header_optionLineOne">Hello Guest</span>
-          <span className="header_optionLineTwo">Sign In</span>
-        </div>
-        <div className="header_option">
-          <span className="header_optionLineOne">Return</span>
-          <span className="header_optionLineTwo">Orders</span>
-        </div>
+        <Link to={!user && "/login"}>
+          <div className="header_option" onClick={handleAuthenticaton}>
+            <span className="header_optionLineOne">
+              Hello {!user ? "Guest" : user.email}
+            </span>
+            <span className="header_optionLineTwo">
+              {user ? "Sign Out" : "Sign In"}
+            </span>
+          </div>
+        </Link>
+        <Link to="/orders">
+          <div className="header_option">
+            <span className="header_optionLineOne">Return</span>
+            <span className="header_optionLineTwo">Orders</span>
+          </div>
+        </Link>
         <div className="header_option">
           <span className="header_optionLineOne">Your</span>
           <span className="header_optionLineTwo">Prime</span>
@@ -35,7 +53,9 @@ function Header() {
         <Link to="/checkout">
           <div className="header_optionBasket">
             <ShoppingBasketIcon />
-            <span className="header_optionTwoBasketCount">0</span>
+            <span className="header_optionTwoBasketCount">
+              {basket?.length}
+            </span>
           </div>
         </Link>
       </div>
