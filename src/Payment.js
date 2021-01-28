@@ -20,18 +20,21 @@ function Payment() {
   const [succeeded, setSucceded] = useState(false);
   const [clientSecret, setClientSecret] = useState(false);
 
+  //card for payment:4000058260000005
+
   useEffect(() => {
     //generate special stripe secret which allows us to charge a customer
     const getClientSecret = async () => {
       const response = await axios({
         method: "post",
-        //stripe expects the total in currencies subunits
+        //stripe expects the total in currencies sub units
         url: `/payment/create?total=${getBasketTotal(basket) * 100}`,
       });
       setClientSecret(response.data.clientSecret);
       console.log(response.data.clientSecret);
     };
-    getClientSecret();
+    const checkAmount = getBasketTotal(basket);
+    if (checkAmount > 0) getClientSecret();
   }, [basket]);
 
   const handleSubmit = async (event) => {
@@ -45,16 +48,25 @@ function Payment() {
           card: elements.getElement(CardElement),
         },
       })
-      .then(({ paymentIntent }) => {
-        //payment confirmation from the backend service
-        console.log("payment response from stripe:", paymentIntent);
-        dispatch({
-          type: "EMPTY_BASKET",
-        });
-        setSucceded(true);
-        setProcessing(false);
-        setError(false);
-        history.replace("/orders"); //to prevent users coming back to payment page
+      .then((result) => {
+        if (result.error) {
+          // Show error to your customer
+          console.log(
+            "Payment rejected due the following reason:",
+            result.error.message
+          );
+        } else {
+          // The payment succeeded!
+          console.log("payment response from stripe:", result);
+          dispatch({
+            type: "EMPTY_BASKET",
+          });
+          setSucceded(true);
+          setProcessing(false);
+          setError(false);
+          history.replace("/orders"); //to prevent users coming back to payment page
+          //orderComplete(result.paymentIntent.id);
+        }
       });
   };
 
