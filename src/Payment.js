@@ -29,6 +29,7 @@ function Payment() {
         url: `/payment/create?total=${getBasketTotal(basket) * 100}`,
       });
       setClientSecret(response.data.clientSecret);
+      console.log(response.data.clientSecret);
     };
     getClientSecret();
   }, [basket]);
@@ -37,6 +38,7 @@ function Payment() {
     //prevent the page from refreshing
     event.preventDefault();
     setProcessing(true);
+    console.log("submit scerectkey", clientSecret);
     const payload = await stripe
       .confirmCardPayment(clientSecret, {
         payment_method: {
@@ -44,7 +46,11 @@ function Payment() {
         },
       })
       .then(({ paymentIntent }) => {
-        //reply from the service
+        //payment confirmation from the backend service
+        console.log("payment response from stripe:", paymentIntent);
+        dispatch({
+          type: "EMPTY_BASKET",
+        });
         setSucceded(true);
         setProcessing(false);
         setError(false);
