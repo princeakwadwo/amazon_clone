@@ -7,6 +7,7 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import CurrencyFormat from "react-currency-format";
 import { getBasketTotal } from "./reducer";
 import axios from "./axios";
+import { db } from "./firebase";
 
 function Payment() {
   const [{ basket, user }, dispatch] = useStateValue();
@@ -56,18 +57,38 @@ function Payment() {
             result.error.message
           );
         } else {
-          // The payment succeeded!
-          console.log("payment response from stripe:", result);
-          dispatch({
-            type: "EMPTY_BASKET",
-          });
-          setSucceded(true);
-          setProcessing(false);
-          setError(false);
-          history.replace("/orders"); //to prevent users coming back to payment page
-          //orderComplete(result.paymentIntent.id);
+          // The payment succeeded! then save orders in db
+          paymentCompleted(result.paymentIntent);
         }
       });
+  };
+
+  const paymentCompleted = (payinfo) => {
+    db.collection("users")
+      .doc(user?.uid)
+      .collection("orders")
+      .doc(payinfo.id)
+      .set({
+        basket: basket,
+        amount: payinfo.amount,
+        currency: payinfo.currency,
+        created: payinfo.created,
+      })
+      .then((response) => {
+        console.log("Document successfully written!", response);
+      })
+      .catch((error) => {
+        console.error("Error writing document: ", error);
+      });
+
+    console.log("payment intent info:", payinfo);
+    setSucceded(true);
+    setProcessing(false);
+    setError(false);
+    dispatch({
+      type: "EMPTY_BASKET",
+    });
+    history.replace("/orders"); //to prevent users coming back to payment page
   };
 
   const handleChange = (e) => {
