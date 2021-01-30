@@ -29,6 +29,14 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+### `firebase deploy --only hosting`
+
+To publish the front end app to firebase hosting service.
+
+### `firebase deploy --only functions`
+
+Run the following command in your terminal window to deploy your backend service to firebase cloud store.
+
 ### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**

@@ -21,7 +21,7 @@ function Payment() {
   const [succeeded, setSucceded] = useState(false);
   const [clientSecret, setClientSecret] = useState(false);
 
-  //card for payment:4000058260000005
+  //card for payment:4000058260000005   4242424242424242
 
   useEffect(() => {
     //generate special stripe secret which allows us to charge a customer
