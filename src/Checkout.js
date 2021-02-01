@@ -3,9 +3,15 @@ import "./Checkout.css";
 import Subtotal from "./Subtotal";
 import CheckoutProduct from "./CheckoutProduct";
 import { useStateValue } from "./StateProvider";
+import { getBasketTotal } from "./reducer";
+import { useHistory } from "react-router-dom";
 
 function Checkout() {
+  const history = useHistory();
   const [{ basket, user }, dispatch] = useStateValue();
+  const checkAmount = getBasketTotal(basket);
+  if (checkAmount === 0) history.push("/");
+
   return (
     <div className="checkout">
       <div className="checkout__left">

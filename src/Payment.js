@@ -24,6 +24,8 @@ function Payment() {
   //card for payment:4000058260000005   4242424242424242
 
   useEffect(() => {
+    const checkAmount = getBasketTotal(basket);
+    
     //generate special stripe secret which allows us to charge a customer
     const getClientSecret = async () => {
       const response = await axios({
@@ -34,7 +36,6 @@ function Payment() {
       setClientSecret(response.data.clientSecret);
       console.log(response.data.clientSecret);
     };
-    const checkAmount = getBasketTotal(basket);
     if (checkAmount > 0) getClientSecret();
   }, [basket]);
 
