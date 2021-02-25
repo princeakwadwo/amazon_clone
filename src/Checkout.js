@@ -10,8 +10,6 @@ function Checkout() {
   const history = useHistory();
   const [{ basket, user }, dispatch] = useStateValue();
   const checkAmount = getBasketTotal(basket);
-//  if (checkAmount === 0) history.push("/");
-
   return (
     <div className="checkout">
       <div className="checkout__left">
