@@ -10,6 +10,7 @@ function Header() {
   const [{ basket, user }, dispatch] = useStateValue();
 
   const handleAuthenticaton = () => {
+    //gmail authenctication
     if (user) {
       auth.signOut();
     }
