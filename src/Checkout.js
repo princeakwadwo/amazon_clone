@@ -7,6 +7,7 @@ import { getBasketTotal } from "./reducer";
 import { useHistory } from "react-router-dom";
 
 function Checkout() {
+  // will review the code soon.
   const history = useHistory();
   const [{ basket, user }, dispatch] = useStateValue();
   const checkAmount = getBasketTotal(basket);
